@@ -5,11 +5,11 @@ const chatController = require("../controller/chatController");
 const { upload } = require("../utils/uploadUtils");
 
 // API => GET
-router.get("/get-Chats", chatController.getChats);
+router.get("/get-chat", chatController.getChats);
 
 // API => POST
 router.post(
-  "/post-Chat",
+  "/post-chat",
   varifyJwtToken,
   upload.single("image"),
   chatController.postChats

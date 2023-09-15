@@ -36,7 +36,8 @@ const getGithubUser = async ({ access_token }) => {
 
     return data;
   } catch (err) {
-    throw new Error(err);
+    // console.log("errr in github", err);
+   return undefined
   }
 };
 

@@ -7,6 +7,7 @@ const { varifyJwtToken } = require("../utils/jwtUtils");
 // API => GET
 router.get("/oauth-github", userController.githubAuth);
 router.get("/media/:name", userController.getMedia);
+router.get("/get-user",varifyJwtToken,userController.getUser);
 
 // API => PATCH
 router.patch("/update-profile-pic", upload.single("image") , userController.updateProfilePic);

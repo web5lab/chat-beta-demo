@@ -6,8 +6,8 @@ const schema = new mongoose.Schema({
     required: true,
   },
   msg: { type: String, required: true },
-  timeStamp: { type: Date, default: Date.now() },
   userDetails: { type: mongoose.Types.ObjectId, ref: "userDetails" },
+  files:{ type: String },
 },{ timestamps: true });
 
 const globlaChat = mongoose.model("chats", schema);

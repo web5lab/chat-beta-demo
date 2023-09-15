@@ -7,44 +7,53 @@ const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
 const { createJwtToken } = require("../utils/jwtUtils");
+const { httpStatus } = require("../utils/otherUtils");
 
 const githubAuth = async (req, res) => {
   try {
     // Get the code from the query
     const code = req.query.code;
 
+    console.log("code: " , code);
+
     // Get the user the access_token with the code
     const { access_token } = await getGithubOathToken({ code });
 
     // Get the user with the access_token
-    const { id, email, avatar_url, name } = await getGithubUser({
+    const data = await getGithubUser({
       access_token,
     });
 
+    console.log("data id", data);
 
-    const user = await  userModal.findOne({userId:id})
+    let user;
+    user = await userModal.findOne({ userId: data?.id });
+    let jwtToken;
+   
 
     if (user) {
+      jwtToken = await createJwtToken({
+        id: user._id.toString(),
+      });
       res.send({
-        updateUserData,
+        user,
         jwtToken: jwtToken,
       });
-      return
+      return;
     }
 
-    const updateUserData = await userModal.findOneAndUpdate(
-      { userId: id },
-      { userId: id, name: name, email: email, profilePic: avatar_url },
+    user = await userModal.findOneAndUpdate(
+      { userId: data?.id },
+      { userId: data?.id, name: data?.name, email: data?.email, profilePic: data?.avatar_url },
       { runValidators: false, new: true, upsert: true }
     );
 
-    const jwtToken = await createJwtToken({
-      id: updateUserData._id.toString(),
+    jwtToken = await createJwtToken({
+      id: user._id.toString(),
     });
 
-
     res.send({
-      updateUserData,
+      user,
       jwtToken: jwtToken,
     });
   } catch (err) {
@@ -111,9 +120,19 @@ const getMedia = async (req, res) => {
   }
 };
 
+const getUser = async (req, res) => {
+  const { id } = req.userPayload;
+  const user = await userModal.findOne({ _id: id });
+  const msg = responseObject(true, false, {
+    user,
+  });
+  res.status(httpStatus.OK).json(msg);
+};
+
 module.exports = {
   githubAuth,
   updateProfilePic,
   updateName,
   getMedia,
+  getUser,
 };
