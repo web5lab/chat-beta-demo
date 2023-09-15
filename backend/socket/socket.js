@@ -1,0 +1,44 @@
+let live_user_count = 0;
+let ioInstance;
+
+const socketIoConnection = (async = (io) => {
+  ioInstance = io;
+  io.on("connection", (socket) => {
+    live_user_count++; // Increment user count on new connection
+    io.emit("user count", { userCount: live_user_count }); // Send updated user count to all clients
+    console.log("A user connected.");
+    socket.on("disconnect", () => {
+      live_user_count--; // Decrement user count on disconnection
+      io.emit("user count", { userCount: live_user_count }); // Send updated user count to all clients
+      console.log("A user disconnected.");
+    });
+  });
+});
+
+const emitNewChat = (chatData, userData) => {
+  return new Promise((resolve, reject) => {
+    ioInstance.emit("new chat", { chatData, userData });
+    resolve();
+  });
+};
+
+const emitUserNameChange = (userName, userId) => {
+  return new Promise((resolve, reject) => {
+    ioInstance.emit("user name change", { userName, userId });
+    resolve();
+  });
+}
+
+const emitNewProfile = (profile, userId) => {
+  return new Promise((resolve, reject) => {
+    ioInstance.emit("new profile", { profile, userId });
+    resolve();
+  });
+}
+
+module.exports = {
+  socketIoConnection,
+  emitNewChat,
+  emitUserNameChange,
+  emitNewProfile
+};
