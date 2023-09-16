@@ -1,6 +1,6 @@
 import React from "react";
 import socketIOClient from "socket.io-client";
-const SERVER_URL = "http://localhost:3999";
+const SERVER_URL = "https://api.cryptomultisend.com";
 
 export const socket = socketIOClient(SERVER_URL, {
   transports: ["websocket"],

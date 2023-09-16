@@ -7,14 +7,15 @@ const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
 const { createJwtToken } = require("../utils/jwtUtils");
-const { httpStatus } = require("../utils/otherUtils");
+const { httpStatus, responseObject } = require("../utils/otherUtils");
+const { emitUserNameChange, emitNewProfile } = require("../socket/socket");
 
 const githubAuth = async (req, res) => {
   try {
     // Get the code from the query
     const code = req.query.code;
 
-    console.log("code: " , code);
+    console.log("code: ", code);
 
     // Get the user the access_token with the code
     const { access_token } = await getGithubOathToken({ code });
@@ -29,7 +30,6 @@ const githubAuth = async (req, res) => {
     let user;
     user = await userModal.findOne({ userId: data?.id });
     let jwtToken;
-   
 
     if (user) {
       jwtToken = await createJwtToken({
@@ -44,7 +44,12 @@ const githubAuth = async (req, res) => {
 
     user = await userModal.findOneAndUpdate(
       { userId: data?.id },
-      { userId: data?.id, name: data?.name, email: data?.email, profilePic: data?.avatar_url },
+      {
+        userId: data?.id,
+        name: data?.login,
+        email: data?.email,
+        profilePic: data?.avatar_url,
+      },
       { runValidators: false, new: true, upsert: true }
     );
 
@@ -63,6 +68,7 @@ const githubAuth = async (req, res) => {
 };
 
 const updateProfilePic = async (req, res) => {
+  const { id } = req.userPayload;
   if (req.fileValidationError) {
     return res.status(400).send(req.fileValidationError);
   }
@@ -81,9 +87,19 @@ const updateProfilePic = async (req, res) => {
       .resize(200, 200, { fit: "inside" })
       .toFile(outputPath);
 
-    res
-      .status(200)
-      .send({ imagePath: `https://img.dexcrash.com/images/${filename}` });
+      const ProfilePic =`https://api.cryptomultisend.com/auth/media/${filename}`
+
+    const updateUserData = await userModal.findOneAndUpdate(
+      { _id: id },
+      { profilePic: ProfilePic },
+      { new: true }
+    );
+
+    res.send({
+      updateUserData,
+    });
+
+   await emitNewProfile(ProfilePic,id)
   } catch (err) {
     console.log("Error uploading", err);
     res.status(500).send("Error processing image");
@@ -101,6 +117,8 @@ const updateName = async (req, res) => {
       { name: name },
       { new: true }
     );
+
+    await emitUserNameChange(name, id);
 
     res.send({
       updateUserData,

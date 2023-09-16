@@ -7,13 +7,16 @@ import { SocketContext, socket } from "./socket/socketContext";
 import store from "./App/store";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
+import { ConfigProvider } from "antd";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <SocketContext.Provider value={socket}>
+        <ConfigProvider>
         <App />
+        </ConfigProvider>
         <Toaster position="left-bottom" />
       </SocketContext.Provider>
     </Provider>

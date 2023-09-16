@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:3999",
+  baseURL: "https://api.cryptomultisend.com",
 });
 
 axiosInstance.interceptors.response.use(

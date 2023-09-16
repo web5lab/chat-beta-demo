@@ -15,30 +15,27 @@ const socketIoConnection = (async = (io) => {
   });
 });
 
-const emitNewChat = (chatData, userData) => {
+const emitNewChat = (chatData) => {
+  ioInstance.emit("newChat", { chatData: chatData });
+};
+
+const emitUserNameChange = (name, userId) => {
   return new Promise((resolve, reject) => {
-    ioInstance.emit("new chat", { chatData, userData });
+    ioInstance.emit("nameChange", { name, userId });
     resolve();
   });
 };
 
-const emitUserNameChange = (userName, userId) => {
+const emitNewProfile = (ProfilePic, userId) => {
   return new Promise((resolve, reject) => {
-    ioInstance.emit("user name change", { userName, userId });
+    ioInstance.emit("profileUpdate", { ProfilePic, userId });
     resolve();
   });
-}
-
-const emitNewProfile = (profile, userId) => {
-  return new Promise((resolve, reject) => {
-    ioInstance.emit("new profile", { profile, userId });
-    resolve();
-  });
-}
+};
 
 module.exports = {
   socketIoConnection,
   emitNewChat,
   emitUserNameChange,
-  emitNewProfile
+  emitNewProfile,
 };

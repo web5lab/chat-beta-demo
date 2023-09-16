@@ -10,7 +10,7 @@ router.get("/media/:name", userController.getMedia);
 router.get("/get-user",varifyJwtToken,userController.getUser);
 
 // API => PATCH
-router.patch("/update-profile-pic", upload.single("image") , userController.updateProfilePic);
+router.patch("/update-profile-pic",varifyJwtToken, upload.single("image") , userController.updateProfilePic);
 router.patch("/update-name",varifyJwtToken,  userController.updateName);
 
 module.exports = router;
