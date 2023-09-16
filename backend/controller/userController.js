@@ -87,7 +87,7 @@ const updateProfilePic = async (req, res) => {
       .resize(200, 200, { fit: "inside" })
       .toFile(outputPath);
 
-      const ProfilePic =`https://api.cryptomultisend.com/auth/media/${filename}`
+      const ProfilePic =`https://api.dexcrash.com/auth/media/${filename}`
 
     const updateUserData = await userModal.findOneAndUpdate(
       { _id: id },

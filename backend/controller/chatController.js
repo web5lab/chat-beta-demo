@@ -52,7 +52,7 @@ const postChats = async (req, res) => {
       await sharp(req.file.buffer)
         .toFile(outputPath);
 
-      imagePath = `https://api.cryptomultisend.com/auth/media/${filename}`;
+      imagePath = `https://api.dexcrash.com/auth/media/${filename}`;
     } catch (err) {
       console.log("Error uploading", err);
       return res.status(500).send("Error processing image");
