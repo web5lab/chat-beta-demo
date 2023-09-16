@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const databaseConnection = require("./mongoDb/db");
 const cors = require("cors");
 const http = require("http");
+
 const app = express();
 const server = http.createServer(app);
 const socketIO = require("socket.io");
@@ -25,6 +26,7 @@ app.use(
 );
 
 // routes import here
+
 const chatRoute = require("./routes/chatRoutes");
 const authRoute = require("./routes/userRoutes");
 
@@ -32,7 +34,11 @@ app.use("/", router);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Add the error log middleware to the app
+
+
 // routes using here
+
 app.use("/auth", authRoute);
 app.use("/chat", chatRoute);
 
@@ -41,4 +47,8 @@ databaseConnection(() => {
     socketIoConnection(io);
     console.log(`server started at ${Port}`);
   });
+});
+
+app.get("/testapi", async (req, res) => {
+  res.send("ok");
 });
