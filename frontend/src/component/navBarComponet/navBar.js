@@ -138,7 +138,7 @@ function NavBar() {
             </div>
           ) : (
             <a
-              href="https://github.com/login/oauth/authorize?scope=user&client_id=cf1326a4b34906726e8e&redirect_uri=http://localhost:3000"
+              href="https://github.com/login/oauth/authorize?scope=user&client_id=cf1326a4b34906726e8e&redirect_uri=https://beta.shibx.live"
               className={`${
                 isDarkMode
                   ? "text-white hover:text-blue-300"

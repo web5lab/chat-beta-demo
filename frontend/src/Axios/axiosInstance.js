@@ -2,7 +2,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const axiosInstance = axios.create({
-  baseURL: "https://api.cryptomultisend.com",
+  baseURL: "https://api.dexcrash.com",
 });
 
 axiosInstance.interceptors.response.use(
